@@ -6,8 +6,8 @@ import Footer from '@/components/layout/Footer'; // Correct relative path
 import './globals.css';
 
 export const metadata = {
-  title: 'James Lanzarrote | Full Stack Developer',
-  description: 'Portfolio of James Lanzarrote, showcasing projects in React, Next.js, and more.',
+  title: 'Dexter Lanzarrote | Full Stack Developer',
+  description: 'Portfolio of Dexter Lanzarrote, showcasing projects in React, Next.js, and more.',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

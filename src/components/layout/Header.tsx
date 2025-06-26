@@ -26,7 +26,7 @@ export default function Header() {
                 <div className="flex items-center justify-between h-16">
                     <div className="flex-shrink-0">
                         <Link href="/" className="text-white font-bold text-xl">
-                            James L. Dev
+                            Portfolio
                         </Link>
                     </div>
                     {/* Desktop Navigation */}

@@ -1,82 +1,27 @@
 // In your project, save this as: app/page.tsx
 'use client';
 
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC } from 'react';
 import Link from 'next/link';
-import { servicesList, technologies, projectsData } from '@/lib/data'; // Corrected relative path
-import { Icons } from '@/components/icons'; // Corrected relative path
-import ProjectCarousel from '@/components/ProjectCarousel'; // Corrected relative path
+import Image from 'next/image'; // Import the Next.js Image component
+import { servicesList, technologies, projectsData } from '../lib/data';
+import { Icons } from '@/components/icons';
+import ProjectCarousel from '../components/ProjectCarousel';
 
 const HomePage: FC = () => {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-    // Effect for the Matrix-style animated background
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return;
-
-        let animationFrameId: number;
-
-        const setupCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        };
-        
-        setupCanvas();
-
-        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        const nums = '0123456789';
-        const alphabet = katakana + latin + nums;
-
-        const fontSize = 16;
-        const columns = Math.floor(canvas.width / fontSize);
-
-        const rainDrops: number[] = [];
-        for (let x = 0; x < columns; x++) {
-            rainDrops[x] = 1;
-        }
-
-        const draw = () => {
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.05)'; // Fading effect for the trail
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = '#4f46e5'; // Indigo color for the falling characters
-            ctx.font = `${fontSize}px monospace`;
-
-            for (let i = 0; i < rainDrops.length; i++) {
-                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-
-                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    rainDrops[i] = 0;
-                }
-                rainDrops[i]++;
-            }
-            animationFrameId = window.requestAnimationFrame(draw);
-        };
-
-        draw();
-
-        window.addEventListener('resize', setupCanvas);
-
-        return () => {
-            window.cancelAnimationFrame(animationFrameId);
-            window.removeEventListener('resize', setupCanvas);
-        };
-    }, []);
-
     return (
         <div>
             {/* Hero Section */}
             <section className="min-h-screen flex items-center justify-center text-center p-4 relative overflow-hidden">
-                <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0"></canvas>
-                <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
+                <div className="absolute inset-0 h-full w-full bg-slate-900 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
                 <div className="relative z-10">
-                    <img src="https://placehold.co/150x150/ffffff/1e293b?text=DL" alt="Dexter Lanzarrote" className="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-slate-700 shadow-lg"/>
+                    <Image 
+                        src="https://placehold.co/150x150/ffffff/1e293b?text=JL" 
+                        alt="Dexter Lanzarrote" 
+                        width={160}
+                        height={160}
+                        className="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-slate-700 shadow-lg"
+                    />
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">Dexter Lanzarrote</h1>
                     <p className="mt-4 text-xl sm:text-2xl text-slate-300">Full Stack Developer</p>
                     <div className="mt-8">
@@ -100,10 +45,8 @@ const HomePage: FC = () => {
             </section>
 
             {/* Projects Carousel */}
-            <section className="py-20 px-4 relative bg-black">
-                 <div className="absolute inset-0 h-full w-full bg-slate-900 bg-[linear-gradient(to_right,#8080800d_1px,transparent_1px),linear-gradient(to_bottom,#8080800d_1px,transparent_1px)] bg-[size:32px_32px] opacity-30"></div>
-                 <div className="absolute inset-0 bg-black/70"></div>
-                <div className="max-w-7xl mx-auto text-center relative z-10">
+            <section className="py-20 px-4">
+                <div className="max-w-7xl mx-auto text-center">
                     <h2 className="text-3xl font-bold text-white">Featured Projects</h2>
                     <p className="text-slate-400 max-w-3xl mx-auto my-4">A selection of my recent work.</p>
                     <ProjectCarousel projects={projectsData} />
