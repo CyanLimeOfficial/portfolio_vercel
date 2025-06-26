@@ -3,7 +3,6 @@
 
 import React, { FC } from 'react';
 import { technologies, tools } from '../../lib/data'; // Correct relative path
-import { TechData } from '../../lib/types'; // Correct relative path
 
 const SkillCard = ({ title, items }: { title: string; items: string[] }) => (
     <div className="bg-slate-800 rounded-lg p-6 shadow-lg h-full">

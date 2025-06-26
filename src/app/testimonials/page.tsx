@@ -4,7 +4,6 @@
 import React, { useState, useCallback, useEffect, FC } from 'react';
 import Image from 'next/image';
 import { testimonialsData } from '@/lib/data';
-import { Icons } from '@/components/icons';
 
 const TestimonialsPage: FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
