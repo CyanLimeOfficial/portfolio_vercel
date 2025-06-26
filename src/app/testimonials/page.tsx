@@ -1,0 +1,50 @@
+// In your project, save this as: app/testimonials/page.tsx
+'use client';
+
+import React, { useState, useCallback, useEffect, FC } from 'react';
+import { testimonialsData } from '../../lib/data'; // Correct relative path
+import { Icons } from '../../components/icons'; // Correct relative path
+
+const TestimonialsPage: FC = () => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const nextTestimonial = useCallback(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonialsData.length);
+    }, []);
+
+    const prevTestimonial = () => {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonialsData.length) % testimonialsData.length);
+    };
+
+    useEffect(() => {
+       const timer = setInterval(nextTestimonial, 7000);
+       return () => clearInterval(timer);
+    }, [nextTestimonial]);
+
+    return (
+        <div className="bg-slate-900 text-white min-h-screen p-4 sm:p-8 flex items-center">
+            <div className="max-w-4xl mx-auto text-center w-full">
+                <header className="mb-12">
+                    <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">What Clients Say</h1>
+                    <p className="mt-4 text-lg text-slate-400">Feedback from people I've worked with.</p>
+                </header>
+                <div className="relative">
+                    <div className="bg-slate-800 p-8 rounded-lg shadow-lg min-h-[320px] flex flex-col justify-center overflow-hidden">
+                       {testimonialsData.map((item, index) => (
+                           <div key={index} className={`w-full h-full transition-opacity duration-700 ease-in-out absolute inset-0 flex flex-col items-center justify-center ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}>
+                                <img src={item.image} alt={item.name} className="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-slate-600" onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100/1e293b/ffffff?text=Error'; }}/>
+                                <p className="text-lg italic text-slate-300 max-w-2xl">"{item.testimonial}"</p>
+                                <h4 className="font-bold text-white mt-6">{item.name}</h4>
+                                <p className="text-sm text-slate-400">{item.title}</p>
+                           </div>
+                       ))}
+                    </div>
+                    <button onClick={prevTestimonial} className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 sm:-translate-x-12 bg-slate-700 p-2 rounded-full hover:bg-slate-600 transition-colors">{Icons.chevronLeft}</button>
+                    <button onClick={nextTestimonial} className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 sm:translate-x-12 bg-slate-700 p-2 rounded-full hover:bg-slate-600 transition-colors">{Icons.chevronRight}</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default TestimonialsPage;

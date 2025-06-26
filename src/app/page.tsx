@@ -1,103 +1,135 @@
-import Image from "next/image";
+// In your project, save this as: app/page.tsx
+'use client';
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+import React, { FC, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { servicesList, technologies, projectsData } from '@/lib/data'; // Corrected relative path
+import { Icons } from '@/components/icons'; // Corrected relative path
+import ProjectCarousel from '@/components/ProjectCarousel'; // Corrected relative path
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+const HomePage: FC = () => {
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+    // Effect for the Matrix-style animated background
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        let animationFrameId: number;
+
+        const setupCanvas = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        };
+        
+        setupCanvas();
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = Math.floor(canvas.width / fontSize);
+
+        const rainDrops: number[] = [];
+        for (let x = 0; x < columns; x++) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.05)'; // Fading effect for the trail
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#4f46e5'; // Indigo color for the falling characters
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+
+                if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+            animationFrameId = window.requestAnimationFrame(draw);
+        };
+
+        draw();
+
+        window.addEventListener('resize', setupCanvas);
+
+        return () => {
+            window.cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('resize', setupCanvas);
+        };
+    }, []);
+
+    return (
+        <div>
+            {/* Hero Section */}
+            <section className="min-h-screen flex items-center justify-center text-center p-4 relative overflow-hidden">
+                <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0"></canvas>
+                <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm"></div>
+                <div className="relative z-10">
+                    <img src="https://placehold.co/150x150/ffffff/1e293b?text=DL" alt="Dexter Lanzarrote" className="w-40 h-40 rounded-full mx-auto mb-6 border-4 border-slate-700 shadow-lg"/>
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">Dexter Lanzarrote</h1>
+                    <p className="mt-4 text-xl sm:text-2xl text-slate-300">Full Stack Developer</p>
+                    <div className="mt-8">
+                        <Link href="/projects" className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-500 transition-transform transform hover:scale-105">
+                            View My Work
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* Tech Stacks Preview */}
+            <section className="py-20 px-4 bg-slate-800/50">
+                <div className="max-w-7xl mx-auto text-center">
+                    <h2 className="text-3xl font-bold text-white">Core Technologies</h2>
+                    <div className="flex flex-wrap justify-center items-center gap-4 mt-8">
+                        {[...technologies.Frontend.slice(0, 4), ...technologies.Backend.slice(0, 3)].map(tech => (
+                            <span key={tech} className="bg-slate-700 text-slate-300 text-md font-medium px-4 py-2 rounded-full">{tech}</span>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Projects Carousel */}
+            <section className="py-20 px-4 relative bg-black">
+                 <div className="absolute inset-0 h-full w-full bg-slate-900 bg-[linear-gradient(to_right,#8080800d_1px,transparent_1px),linear-gradient(to_bottom,#8080800d_1px,transparent_1px)] bg-[size:32px_32px] opacity-30"></div>
+                 <div className="absolute inset-0 bg-black/70"></div>
+                <div className="max-w-7xl mx-auto text-center relative z-10">
+                    <h2 className="text-3xl font-bold text-white">Featured Projects</h2>
+                    <p className="text-slate-400 max-w-3xl mx-auto my-4">A selection of my recent work.</p>
+                    <ProjectCarousel projects={projectsData} />
+                </div>
+            </section>
+            
+            {/* Services Preview */}
+            <section className="py-20 px-4 bg-slate-800/50">
+                <div className="max-w-5xl mx-auto text-center">
+                    <h2 className="text-3xl font-bold text-white">Services</h2>
+                    <p className="text-slate-400 max-w-3xl mx-auto my-4">Bringing ideas to life with a wide range of technical skills.</p>
+                    <div className="grid md:grid-cols-2 gap-8 text-left mt-8">
+                        {servicesList.slice(0, 4).map(service => (
+                            <div key={service.title} className="bg-slate-800 p-6 rounded-lg flex items-center gap-4">
+                                <div className="text-indigo-400 w-10 h-10 flex-shrink-0">{Icons[service.iconName]}</div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-white mb-1">{service.title}</h3>
+                                    <p className="text-slate-400 text-sm">{service.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+    );
+};
+
+export default HomePage;
